@@ -1,0 +1,206 @@
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chat app</title>
+</head>
+<body>
+    <h1>Chatt</h1>
+    <input type="text" placeholder="mssg here" id="msg"/>
+    <button id="sndBtn">Send</button>
+    <div id="messages"></div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket= io();
+        const sndBtn= document.getElementById('sndBtn')
+        const messageInput= document.getElementById('msg')
+        const allDta= document.getElementById('messages')
+        socket.on('message',(messages)=>{
+            //console.log(message)
+            const p= document.createElement('p')
+            p.innerText= messages;
+            allDta.appendChild(p)
+        })
+
+        sndBtn.addEventListener('click',(e)=>{
+            const check= messageInput.value
+            //console.log(check)
+            socket.emit('user-message',check)
+        })
+    </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+</head>
+<body>
+    <h1>Chat App</h1>
+    <div id="messages"></div>
+    <div id="fole"></div>
+    <form id="chatForm">
+        <input type="text" id="msgInput" placeholder="Enter message">
+        <button type="submit">Send</button>
+    </form>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <button type="submit">Upload</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <!--
+    <script>
+        const socket = io();
+
+        // Handle messages
+        socket.on('message', (msg) => {
+            const messages = document.getElementById('messages');
+            messages.innerHTML += `<p>${msg}</p>`;
+        });
+
+        // Handle file uploads
+        socket.on('file', (filename) => {
+            const messages = document.getElementById('messages');
+            if(!messages){
+                console.log("failed to upload ")
+            }else{
+                messages.innerHTML += `<p>File uploaded: ${filename}</p>`;
+                console.log("Success")
+            }
+            
+        });
+
+        // Handle form submission (chat)
+        document.getElementById('chatForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const msgInput = document.getElementById('msgInput');
+            socket.emit('chatMessage', msgInput.value);
+            msgInput.value = '';
+        });
+
+        // Handle form submission (file upload)
+        document.getElementById('uploadForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const fileInput = document.querySelector('input[type="file"]');
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+        });
+    </script>
+-->
+<!-- <script>
+    const socket = io();
+    // Joining a room
+socket.emit('joinRoom', 'roomId');
+    // Handle messages
+    socket.on('message', (msg) => {
+        const messages = document.getElementById('messages');
+        messages.innerHTML += `<p>${msg}</p>`;
+    });
+
+    // Handle file uploads
+    socket.on('file', (filename) => {
+        const messages = document.getElementById('messages');
+        messages.innerHTML += `<p>File uploaded: ${filename}</p>`;
+    });
+
+    // Handle form submission (chat)
+    document.getElementById('chatForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const msgInput = document.getElementById('msgInput');
+        socket.emit('chatMessage', msgInput.value);
+        msgInput.value = '';
+    });
+
+    // Handle form submission (file upload)
+    document.getElementById('uploadForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fileInput = document.querySelector('input[type="file"]');
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+        
+        // Display uploaded file immediately to the uploader
+        const messages = document.getElementById('messages');
+        messages.innerHTML += `<p>File uploading...</p>`;
+        // Emit file event
+        socket.emit('fileUploaded', fileInput.files[0].name);
+        
+        // Send file to server
+        fetch('/upload', {
+            method: 'POST',
+            body: formData
+        });
+    });
+</script> -->
+
+<script>
+    const socket = io();
+    
+    // Function to generate a unique room ID
+    //function generateRoomId() {
+      //  return Math.random().toString(36).substring(7);
+   // }
+
+    // Joining a room with a unique roomId
+    const roomId = "Hello con" //generateRoomId();
+    socket.emit('joinRoom', roomId);
+    
+    // Handle messages
+    socket.on('message', (msg) => {
+        const messages = document.getElementById('messages');
+        messages.innerHTML += `<p>${msg}</p>`;
+    });
+
+    // Handle file uploads
+    socket.on('file', (filename) => {
+        const messages = document.getElementById('messages');
+        messages.innerHTML += `<p>File uploaded: ${filename}</p>`;
+    });
+
+    // Handle form submission (chat)
+    document.getElementById('chatForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const msgInput = document.getElementById('msgInput');
+        socket.emit('chatMessage', msgInput.value, roomId); // Pass roomId along with the message
+        msgInput.value = '';
+    });
+
+    // Handle form submission (file upload)
+    document.getElementById('uploadForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fileInput = document.querySelector('input[type="file"]');
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+        
+        // Display uploaded file immediately to the uploader
+        const messages = document.getElementById('messages');
+        messages.innerHTML += `<p>File uploaded Successfully...</p>`;
+        
+        // Emit file event with roomId
+        socket.emit('fileUploaded', fileInput.files[0].name, roomId);
+        
+        // Send file to server
+        fetch('/upload', {
+            method: 'POST',
+            body: formData
+        });
+    });
+</script>
+
+
+
+
+
+</body>
+</html>
+
+
